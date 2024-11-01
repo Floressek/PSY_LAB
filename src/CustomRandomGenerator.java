@@ -99,6 +99,23 @@ public class CustomRandomGenerator {
         int numberOfTrials = 100000;
         int M = 100;
 
+        // Wyniki testów dla generatorów
+        Result result = getResult(numberOfTrials, generator, random, M);
+
+        // Wyświetlenie wyników
+        System.out.println("Porównanie generatorów dla " + numberOfTrials + " prób:");
+        System.out.println("--------------------------------------------");
+        System.out.printf("Własny generator - średnia: %.4f%n", result.customMean());
+        System.out.printf("Generator Java Random - średnia: %.4f%n", result.randomMean());
+        System.out.printf("Wartość teoretyczna: %.4f%n", result.theoreticalMean());
+        System.out.println("--------------------------------------------");
+        System.out.printf("Różnica od wartości teoretycznej:%n");
+        System.out.printf("Własny generator: %.4f%n", Math.abs(result.customMean() - result.theoreticalMean()));
+        System.out.printf("Generator Java Random: %.4f%n", Math.abs(result.randomMean() - result.theoreticalMean()));
+
+    }
+
+    private static Result getResult(int numberOfTrials, CustomRandomGenerator generator, Random random, int M) {
         // Test of our generator
         AtomicInteger customSum = new AtomicInteger();
         IntStream.range(0, numberOfTrials).forEach(i -> customSum.addAndGet(generator.nextInt()));
@@ -111,17 +128,9 @@ public class CustomRandomGenerator {
 
         // Theoretical Mean
         double theoreticalMean = (M - 1) / 2.0;
+        return new Result(customMean, randomMean, theoreticalMean);
+    }
 
-        // Wyświetlenie wyników
-        System.out.println("Porównanie generatorów dla " + numberOfTrials + " prób:");
-        System.out.println("--------------------------------------------");
-        System.out.printf("Własny generator - średnia: %.4f%n", customMean);
-        System.out.printf("Generator Java Random - średnia: %.4f%n", randomMean);
-        System.out.printf("Wartość teoretyczna: %.4f%n", theoreticalMean);
-        System.out.println("--------------------------------------------");
-        System.out.printf("Różnica od wartości teoretycznej:%n");
-        System.out.printf("Własny generator: %.4f%n", Math.abs(customMean - theoreticalMean));
-        System.out.printf("Generator Java Random: %.4f%n", Math.abs(randomMean - theoreticalMean));
-
+    private record Result(double customMean, double randomMean, double theoreticalMean) {
     }
 }
