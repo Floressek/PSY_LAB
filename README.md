@@ -73,6 +73,7 @@ Each task has its dedicated test method in Main class:
 - `testTask2()`: Tests custom distribution
 - `testTask3()`: Tests discrete distribution
 
+
 ### Statistical Verification
 - Empirical means calculated from generated samples
 - Theoretical means calculated for comparison
