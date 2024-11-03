@@ -1,4 +1,6 @@
 package lab_1;
+import lab_1.Generator.RandomGenerator;
+
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -84,11 +86,12 @@ public class CustomRandomGenerator {
     public static void main(String[] args) {
         // Tworzenie generatora z zadanymi parametrami
 //        CustomRandomGenerator generator = new CustomRandomGenerator(97, 11, 100, 1);
-        CustomRandomGenerator generator = new CustomRandomGenerator(16807, 0, Integer.MAX_VALUE, 1);
+            CustomRandomGenerator generator = new CustomRandomGenerator(97, 11, 100, 1);
+//        CustomRandomGenerator generator = new CustomRandomGenerator(16807, 0, Integer.MAX_VALUE, 1);
 
         // Test nextInt()
         System.out.println("Generowanie 10 liczb całkowitych [0, 100):");
-        IntStream.range(0, 10).mapToObj(i -> generator.nextInt() + " ").forEach(System.out::print);
+        IntStream.range(0, 100).mapToObj(i -> generator.nextInt() + " ").forEach(System.out::print);
         System.out.println("\n");
 
         // Test nextDouble()
@@ -98,12 +101,12 @@ public class CustomRandomGenerator {
 
         // Test nextDouble(low, high)
         System.out.println("Generowanie 10 liczb [-5.0, 5.0):");
-        IntStream.range(0, 10).forEach(i -> System.out.printf("%.4f ", generator.nextDouble(-5.0, 5.0)));
+        IntStream.range(0, 100).forEach(i -> System.out.printf("%.4f ", generator.nextDouble(-5.0, 5.0)));
         System.out.println("\n");
 
         // Test exponential(lambda)
         System.out.println("Generowanie 10 liczb o rozkładzie wykładniczym (lambda=1.0):");
-        IntStream.range(0, 10).forEach(i -> System.out.printf("%.4f ", generator.exponential(1.0)));
+        IntStream.range(0, 100).forEach(i -> System.out.printf("%.4f ", generator.exponential(1.0)));
         System.out.println("\n");
 
         // Test dla sredniej
@@ -167,7 +170,7 @@ public class CustomRandomGenerator {
     /**
      * Klasa pomocnicza do przechowywania wyników testów
      */
-    private record Result(double customMean, double randomMean, double theoreticalMean) {
+    public record Result(double customMean, double randomMean, double theoreticalMean) {
     }
 
     public static void distributionTest(int iterations, int M) {

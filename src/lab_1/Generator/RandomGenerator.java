@@ -74,6 +74,34 @@ public class RandomGenerator {
         }
     }
 
+    public double discrete(double[] xx, double[] p) {
+        if (xx == null || p == null || xx.length == 0 || p.length == 0 || xx.length != p.length) {
+            throw new IllegalArgumentException("Arrays must have the same length");
+        }
+
+        // Generate random value
+        double u = nextDouble();
+        double cumulativeProbability = 0.0;
+
+        for (int i = 0; i < p.length; i++) {
+            cumulativeProbability += p[i];
+            if (u < cumulativeProbability) {
+                return xx[i];
+            }
+        }
+
+        return xx[xx.length - 1]; // return last value
+    }
+
+    // Helper method to calculate theoretical mean
+    public static double calculateTheoreticalMean(double[] xx, double[] p) {
+        double mean = 0.0;
+        for (int i = 0; i < xx.length; i++) {
+            mean += xx[i] * p[i];
+        }
+        return mean;
+    }
+
     /**
      * Metoda pomocnicza do przeprowadzenia testów generatorów
      *
