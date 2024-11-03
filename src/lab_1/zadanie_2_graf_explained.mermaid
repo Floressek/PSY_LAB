@@ -1,0 +1,40 @@
+flowchart TD
+    subgraph Step1["Krok 1: Funkcja gęstości f(x)"]
+        A1["f(x) = 1/2 dla x ∈ [-1,0]"]
+        A2["f(x) = 1/4 dla x ∈ [0,2]"]
+        A3["f(x) = 0 poza przedziałami"]
+    end
+
+    subgraph Step2["Krok 2: Dystrybuanta F(x)"]
+        B1["x ≤ -1: F(x) = 0"]
+        B2["x ∈ [-1,0]: F(x) = ∫(-1 do x) 1/2 dt"]
+        B3["F(x) = (1/2)(x + 1)"]
+        B4["x ∈ [0,2]: F(x) = F(0) + ∫(0 do x) 1/4 dt"]
+        B5["F(0) = 1/2"]
+        B6["F(x) = 1/2 + (1/4)x"]
+        B7["x > 2: F(x) = 1"]
+    end
+
+    subgraph Step3["Krok 3: Odwracanie F(x)"]
+        C1["Przedział [0,1/2]:"]
+        C2["u = (1/2)(x + 1)"]
+        C3["x = 2u - 1"]
+        C4["Przedział [1/2,1]:"]
+        C5["u = 1/2 + (1/4)x"]
+        C6["x = 4u - 2"]
+    end
+
+    subgraph Step4["Implementacja"]
+        D1["Generuj U ~ U[0,1]"]
+        D2{"U ≤ 1/2?"}
+        D3["X = 2U - 1"]
+        D4["X = 4U - 2"]
+
+        D1 --> D2
+        D2 -->|Tak| D3
+        D2 -->|Nie| D4
+    end
+
+    Step1 --> Step2
+    Step2 --> Step3
+    Step3 --> Step4
