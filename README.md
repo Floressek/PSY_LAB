@@ -5,6 +5,8 @@ This laboratory focuses on implementing and testing various random number genera
 
 ## Tasks Overview
 
+## Lab_1:
+
 ### Task 1: Linear Congruential Generator
 Implementation of a basic pseudorandom number generator using the Linear Congruential Method (LCM).
 
