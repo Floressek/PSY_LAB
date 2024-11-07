@@ -60,6 +60,9 @@ public class Main {
         AtomicInteger sum = new AtomicInteger();
         int iteration = 1000;
         IntStream.range(0, iteration).forEach(i -> sum.addAndGet(generator.nextInt()));
+        var r = IntStream.range(0, iteration)
+                .map(i -> generator.nextInt())
+                .sum();
 
         System.out.printf("Średnia z %d wartości nextInt(): %.4f\n", iteration, sum.get() / (double) iteration);
 
@@ -93,6 +96,9 @@ public class Main {
         System.out.println("--------------------------------------------");
         System.out.println("rozklad1() (wykres i.) srednia: " + sum / iteration + ", wartosc oczekiwana: " +  1.0 / 4.0);
         System.out.println("--------------------------------------------");
+
+//        STR
+//                . "Today's weather is \{ feelsLike }, with a temperature of \{ temperature } degrees \{ unit }" ;
 
     }
 

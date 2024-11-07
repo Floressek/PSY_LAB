@@ -112,7 +112,7 @@ public class CustomRandomGenerator {
         // Test dla sredniej
         AtomicInteger sum = new AtomicInteger();
         int iteration = 1000;
-        IntStream.range(0, iteration).forEach(i -> sum.addAndGet(generator.nextInt()));
+        IntStream.range(0, iteration).parallel().forEach(i -> sum.addAndGet(generator.nextInt()));
 
         System.out.printf("Średnia z %d wartości nextInt(): %.4f\n", iteration, sum.get() / (double) iteration);
 
