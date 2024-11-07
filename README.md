@@ -1,4 +1,4 @@
-# Laboratory - Random Number Generation and Probability Distributions
+# Laboratory - Pseudorandom Number Generation and Probability Distributions
 
 ## Overview
 This laboratory focuses on implementing and testing various random number generation methods and probability distributions using Java. The implementation includes a custom random number generator and methods for generating various probability distributions.
