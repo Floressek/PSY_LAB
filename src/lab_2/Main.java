@@ -7,12 +7,12 @@ import dissimlab.simcore.SimManager;
 
 public class Main {
     public static void main(String[] args) throws SimControlException {
-        SimManager simMgr = new SimManager();
+        SimManager simMgr = SimManager.getInstance();
         // Ilosc krokow symulacji = 1000 / 0.1 = 10000
         simMgr.setEndSimTime(1000.0);
 
         MySimObj mySimObj = new MySimObj
-                (0.1,
+                (1.0,
                         8.0,
                         2.0,
                         15.0,
@@ -32,12 +32,12 @@ public class Main {
                 Statistics.arithmeticMean(mySimObj.getMonVar2()));
 
         Diagram d1 = new Diagram(Diagram.DiagramType.TIME, "Liczba interesantów w czasie");
-        d1.add(mySimObj.getMonVar1());
+        d1.add(mySimObj.getMonVar1(), java.awt.Color.BLUE);
         d1.show();
 
         Diagram d2 = new Diagram(Diagram.DiagramType.DISTRIBUTION,
                 "Dystrybuanta czasu przebywania w systemie");
-        d2.add(mySimObj.getMonVar2());
+        d2.add(mySimObj.getMonVar2(), java.awt.Color.RED);
         d2.show();
     }
 }

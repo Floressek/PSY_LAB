@@ -17,6 +17,14 @@ public class Stanowisko {
         return zajete;
     }
 
+    public Interesant getAktywnyInteresant() {
+        return aktywnyInteresant;
+    }
+
+    public double getCzasKoncaObslugi() {
+        return czasKoncaObslugi;
+    }
+
     // Rozpoczecie obslugi interesanta
     public void rozpocznijObsluge(Interesant interesant, double czasObslugi) {
         this.zajete = true;

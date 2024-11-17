@@ -59,7 +59,7 @@ public class MySimObj extends dissimlab.simcore.BasicSimObj {
     }
 
     public void dodajInteresanta() {
-        if(kolejka.size() < L) {
+        if (kolejka.size() < L) {
             // Czas przybycia interesanta
             double czasPrzybycia = this.simTime();
             // Czas cierpliwosci interesanta jako zmienna rownomierna
@@ -68,8 +68,16 @@ public class MySimObj extends dissimlab.simcore.BasicSimObj {
             Interesant nowyInteresant = new Interesant(czasPrzybycia, czasCierpliwosci);
             this.kolejka.add(nowyInteresant);
 
+            System.out.println("Dodano interesanta - czas przybycia: " + czasPrzybycia +
+                    ", max czas oczekiwania: " + czasCierpliwosci +
+                    ", długość kolejki: " + kolejka.size());
+
             // Monitorowanie liczby interesantow w systemie
             monVar1.setValue(kolejka.size() + stanowiska.stream().filter(Stanowisko::isZajete).count());
+            System.out.println("Aktualna liczba interesantów w systemie: " +
+                    (kolejka.size() + stanowiska.stream().filter(Stanowisko::isZajete).count()));
+        } else {
+            System.out.println("Kolejka pełna - interesant odrzucony");
         }
     }
 
@@ -79,13 +87,27 @@ public class MySimObj extends dissimlab.simcore.BasicSimObj {
                 // Kolejka FIFO
                 Interesant obslugiwanyInteresant = kolejka.removeFirst();
                 // Czas obslugi interesanta jako zmienna losowa z rozkladu normalnego
-                double czasObslugi = rng.normal(mi, sigma);
+                double czasObslugi;
+                do {
+                    czasObslugi = rng.normal(mi, sigma);
+                } while (czasObslugi <= 0); // Upewniamy się, że czas obsługi jest dodatni
 
-                stanowisko.rozpocznijObsluge(obslugiwanyInteresant,simTime() + czasObslugi);
+                // Ustawiamy czas końca obsługi
+                double czasKoncaObslugi = this.simTime() + czasObslugi;
+                stanowisko.rozpocznijObsluge(obslugiwanyInteresant, czasKoncaObslugi);
+
+                System.out.println("Rozpoczęto obsługę interesanta - czas przybycia: " +
+                        obslugiwanyInteresant.getCzasPrzybycia() +
+                        ", czas obsługi: " + czasObslugi +
+                        ", planowany koniec: " + czasKoncaObslugi);
 
                 // Monitorowanie liczby interesantow w systemie oraz czasu przebywania interesanta w systemie
                 monVar1.setValue(kolejka.size() + stanowiska.stream().filter(Stanowisko::isZajete).count());
-                monVar2.setValue(simTime() - obslugiwanyInteresant.getCzasPrzybycia());
+                monVar2.setValue(this.simTime() - obslugiwanyInteresant.getCzasPrzybycia());
+
+                System.out.println("Aktualna liczba interesantów w systemie: " +
+                        (kolejka.size() + stanowiska.stream().filter(Stanowisko::isZajete).count()) +
+                        ", czas w systemie: " + (this.simTime() - obslugiwanyInteresant.getCzasPrzybycia()));
             }
         }
     }
