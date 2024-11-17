@@ -20,6 +20,7 @@ public class NewCarEvent extends BasicSimEvent<Trasa, Object> {
 
             System.out.println("[" + simTime() + "] Nowy pojazd na trasie. ID: " +
                     pojazd.getId() + ", Pozycja: " + pojazd.getPozycja() +
+                    ", Prędkość: " + String.format("%.2f", pojazd.getPredkosc()) +
                     ", Przebyta droga: " + pojazd.getPrzebytaDroga() +
                     ", Czas jazdy: " + (simTime() - pojazd.getCzasStartu()));
 
