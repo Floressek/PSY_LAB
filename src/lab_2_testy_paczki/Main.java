@@ -1,4 +1,4 @@
-package lab_2;
+package lab_2_testy_paczki;
 
 import dissimlab.monitors.Diagram;
 import dissimlab.monitors.Statistics;
@@ -7,30 +7,34 @@ import dissimlab.simcore.SimManager;
 
 public class Main {
     public static void main(String[] args) throws SimControlException {
-        SimManager simMgr = SimManager.getInstance();
-        // Ilosc krokow symulacji = 1000 / 0.1 = 10000
-        simMgr.setEndSimTime(1000.0);
+        SimManager sm = SimManager.getInstance();
+        // Ustawienie kroku czasowego
+        sm.setSimTimeStep(0.1);
+        sm.setEndSimTime(1000.0);
 
-        MySimObj mySimObj = new MySimObj
-                (1.0,
-                        8.0,
-                        2.0,
-                        15.0,
-                        30.0,
-                        20,
-                        2);
+        MySimObj mySimObj = new MySimObj(
+                0.1,    // lambda
+                8.0,    // mi
+                2.0,    // sigma
+                15.0,   // minCzasOczekiwania
+                30.0,   // maxCzasOczekiwania
+                20,     // L
+                2);     // liczbaOkienek
 
         double krok = 0.1;
-        MyEvent1 myEvent1 = new MyEvent1(mySimObj, null, krok);
-        MyEvent2 myEvent2 = new MyEvent2(mySimObj, null, krok);
+        new MyEvent1(mySimObj, null, krok);
+        new MyEvent2(mySimObj, null, krok);
+        new CheckQueueEvent(mySimObj, null, krok);
 
-        simMgr.startSimulation();
+        sm.startSimulation();
 
+        // Wyświetl wyniki
         System.out.println("Średnia liczba interesantów: " +
                 Statistics.weightedMean(mySimObj.getMonVar1()));
         System.out.println("Średni czas przebywania w systemie: " +
                 Statistics.arithmeticMean(mySimObj.getMonVar2()));
 
+        // Pokaż wykresy
         Diagram d1 = new Diagram(Diagram.DiagramType.TIME, "Liczba interesantów w czasie");
         d1.add(mySimObj.getMonVar1(), java.awt.Color.BLUE);
         d1.show();

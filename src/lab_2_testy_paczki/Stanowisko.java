@@ -1,4 +1,4 @@
-package lab_2;
+package lab_2_testy_paczki;
 
 public class Stanowisko {
 
@@ -32,9 +32,10 @@ public class Stanowisko {
         this.czasKoncaObslugi = czasObslugi;
     }
 
-    // Zakonczenie obslugi interesanta
     public void zakonczObsluge() {
+        System.out.println("Obsługa zakończona dla interesanta.");
         this.zajete = false;
         this.aktywnyInteresant = null;
     }
+
 }

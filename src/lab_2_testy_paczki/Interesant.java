@@ -1,4 +1,4 @@
-package lab_2;
+package lab_2_testy_paczki;
 
 public class Interesant {
     private final double czasPrzybycia;

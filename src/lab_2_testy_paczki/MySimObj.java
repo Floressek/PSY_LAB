@@ -1,4 +1,4 @@
-package lab_2;
+package lab_2_testy_paczki;
 
 import dissimlab.broker.INotificationEvent;
 import dissimlab.broker.IPublisher;
@@ -19,6 +19,10 @@ public class MySimObj extends dissimlab.simcore.BasicSimObj {
     int L;              // maksymalna dlugosc kolejki
     int liczbaOkienek;
 
+    private int liczbaObsluzonych = 0;
+    private int liczbaNiecierpliwych = 0;
+    private double nextInteresantTime = 0.0;
+
     List<Interesant> kolejka;
     List<Stanowisko> stanowiska;
 
@@ -36,6 +40,7 @@ public class MySimObj extends dissimlab.simcore.BasicSimObj {
         this.L = L;
         this.liczbaOkienek = liczbaOkienek;
 
+
         this.rng = new RNGenerator();
 
         // Inicjalizacja listy interesantow oraz stanowisk
@@ -48,6 +53,23 @@ public class MySimObj extends dissimlab.simcore.BasicSimObj {
         // Inicjalizacja monitorow
         this.monVar1 = new MonitoredVar(0);
         this.monVar2 = new MonitoredVar();
+    }
+
+    // Dodaj gettery
+    public int getLiczbaObsluzonych() { return liczbaObsluzonych; }
+    public int getLiczbaNiecierpliwych() { return liczbaNiecierpliwych; }
+
+    // Dodaj metody inkrementacji
+    public void incrementObsluzeni() { liczbaObsluzonych++; }
+    public void incrementNiecierpliwi() { liczbaNiecierpliwych++; }
+
+    // Dodaj gettery i settery
+    public double getNextInteresantTime() {
+        return nextInteresantTime;
+    }
+
+    public void setNextInteresantTime(double time) {
+        this.nextInteresantTime = time;
     }
 
     public MonitoredVar getMonVar1() {
@@ -68,6 +90,9 @@ public class MySimObj extends dissimlab.simcore.BasicSimObj {
             Interesant nowyInteresant = new Interesant(czasPrzybycia, czasCierpliwosci);
             this.kolejka.add(nowyInteresant);
 
+            // Ustaw czas następnego interesanta
+            this.nextInteresantTime = simTime() + rng.exponential(lambda);
+
             System.out.println("Dodano interesanta - czas przybycia: " + czasPrzybycia +
                     ", max czas oczekiwania: " + czasCierpliwosci +
                     ", długość kolejki: " + kolejka.size());
@@ -84,9 +109,10 @@ public class MySimObj extends dissimlab.simcore.BasicSimObj {
     public void obsluzInteresanta() {
         for (Stanowisko stanowisko : stanowiska) {
             if (!stanowisko.isZajete() && !kolejka.isEmpty()) {
+                System.out.println("Stanowisko " + stanowiska.indexOf(stanowisko) + " obsługuje interesanta.");
                 // Kolejka FIFO
                 Interesant obslugiwanyInteresant = kolejka.removeFirst();
-                // Czas obslugi interesanta jako zmienna losowa z rozkladu normalnego
+                // Czas obsługi interesanta jako zmienna losowa z rozkładu normalnego
                 double czasObslugi;
                 do {
                     czasObslugi = rng.normal(mi, sigma);
@@ -101,7 +127,7 @@ public class MySimObj extends dissimlab.simcore.BasicSimObj {
                         ", czas obsługi: " + czasObslugi +
                         ", planowany koniec: " + czasKoncaObslugi);
 
-                // Monitorowanie liczby interesantow w systemie oraz czasu przebywania interesanta w systemie
+                // Monitorowanie liczby interesantów w systemie oraz czasu przebywania interesanta w systemie
                 monVar1.setValue(kolejka.size() + stanowiska.stream().filter(Stanowisko::isZajete).count());
                 monVar2.setValue(this.simTime() - obslugiwanyInteresant.getCzasPrzybycia());
 
@@ -111,6 +137,7 @@ public class MySimObj extends dissimlab.simcore.BasicSimObj {
             }
         }
     }
+
 
     @Override
     public void reflect(IPublisher iPublisher, INotificationEvent iNotificationEvent) {
