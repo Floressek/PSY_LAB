@@ -18,13 +18,16 @@ public class ParkingEvent extends BasicSimEvent<Trasa, Object> {
 
         while(iterator.hasNext()) {
             Pojazd pojazd = iterator.next();
-            if (simTime() >= pojazd.getCzasStartu() + trasa.getRandomParkingTime()) {
+            if (simTime() >= pojazd.getCzasStartu() + pojazd.getCzasParkowania()) {
                 iterator.remove();
                 pojazd.setKierunekPowrotny(true);
                 pojazd.setPredkosc(trasa.getRandomSpeed());
+                double czasParkowania = simTime() - (pojazd.getCzasStartu() + pojazd.getCzasParkowania());
+                pojazd.setCzasParkowania(czasParkowania);
                 trasa.getPojazdyNaTrasie().add(pojazd);
                 System.out.println("[" + simTime() + "] Pojazd rozpoczyna powrót. ID: " +
-                        pojazd.getId() + ", Nowa prędkość: " + pojazd.getPredkosc());
+                    pojazd.getId() + ", Nowa prędkość: " + pojazd.getPredkosc() +
+                    ", Czas parkowania: " + czasParkowania);
             }
         }
     }

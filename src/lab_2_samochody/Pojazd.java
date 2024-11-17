@@ -12,6 +12,7 @@ class Pojazd extends BasicSimObj {
     private double przebytaDroga;
     private int pozycja; // numer odcinka
     private double czasStartu;
+    private double czasParkowania;
     private boolean kierunekPowrotny;
 
     public Pojazd(double predkosc) {
@@ -20,6 +21,7 @@ class Pojazd extends BasicSimObj {
         this.przebytaDroga = 0;
         this.pozycja = 0;
         this.czasStartu = simTime();
+        this.czasParkowania = 0;
         this.kierunekPowrotny = false;
     }
 
@@ -35,6 +37,19 @@ class Pojazd extends BasicSimObj {
     public boolean isKierunekPowrotny() { return kierunekPowrotny; }
     public void setKierunekPowrotny(boolean kierunekPowrotny) {
         this.kierunekPowrotny = kierunekPowrotny;
+    }
+
+    public double getCzasParkowania() {
+        return czasParkowania;
+    }
+
+    public void setCzasParkowania(double czasParkowania) {
+        this.czasParkowania = czasParkowania;
+    }
+
+    // Metoda zwracająca całkowity czas przejazdu wliczając parkowanie
+    public double getCzasPrzejazdu() {
+        return simTime() - czasStartu + czasParkowania;
     }
 
     @Override
