@@ -15,52 +15,59 @@ public class CarMovementEvent extends BasicSimEvent<Trasa, Object> {
     protected void stateChange() throws SimControlException {
         Trasa trasa = getSimObj();
         Iterator<Pojazd> iterator = trasa.getPojazdyNaTrasie().iterator();
+        double calkowitaDlugoscTrasy = trasa.getLiczbaOdcinkow() * trasa.getDlugoscOdcinka();
 
         while(iterator.hasNext()) {
             Pojazd pojazd = iterator.next();
             double nowyDystans;
 
             if (!pojazd.isKierunekPowrotny()) {
+                // Jazda do przodu - zwiększamy dystans
                 nowyDystans = pojazd.getPrzebytaDroga() + pojazd.getPredkosc() * 0.1;
             } else {
-                nowyDystans = pojazd.getPrzebytaDroga() - pojazd.getPredkosc() * 0.1;
+                // Jazda powrotna - kontynuujemy liczenie dystansu powyżej całkowitej długości
+                nowyDystans = pojazd.getPrzebytaDroga() + pojazd.getPredkosc() * 0.1;
             }
 
             pojazd.setPrzebytaDroga(nowyDystans);
 
             int nowyOdcinek;
             if (!pojazd.isKierunekPowrotny()) {
+                // W drodze do końca trasy
                 nowyOdcinek = (int)(nowyDystans / trasa.getDlugoscOdcinka());
             } else {
-                nowyOdcinek = trasa.getLiczbaOdcinkow() -
-                    (int)((trasa.getLiczbaOdcinkow() * trasa.getDlugoscOdcinka() - nowyDystans)
-                    / trasa.getDlugoscOdcinka());
+                // W drodze powrotnej - obliczamy pozycję od końca
+                double dystansOdKonca = nowyDystans - calkowitaDlugoscTrasy;
+                nowyOdcinek = trasa.getLiczbaOdcinkow() - 1 -
+                    (int)(dystansOdKonca / trasa.getDlugoscOdcinka());
             }
 
             if (nowyOdcinek != pojazd.getPozycja()) {
                 pojazd.setPozycja(nowyOdcinek);
                 System.out.println("[" + simTime() + "] Zmiana odcinka. ID: " +
                     pojazd.getId() + ", Pozycja: " + pojazd.getPozycja() +
-                    ", Przebyta droga: " + pojazd.getPrzebytaDroga() +
+                    ", Przebyta droga: " + String.format("%.2f", pojazd.getPrzebytaDroga()) +
                     ", Kierunek: " + (pojazd.isKierunekPowrotny() ? "powrotny" : "do przodu") +
-                    ", Czas jazdy: " + (simTime() - pojazd.getCzasStartu()));
+                    ", Czas jazdy: " + String.format("%.2f", (simTime() - pojazd.getCzasStartu())));
 
-                // Sprawdzenie czy pojazd dotarł do końca trasy
+                // Dotarcie do końca trasy (pierwsza połowa podróży)
                 if (!pojazd.isKierunekPowrotny() && nowyOdcinek >= trasa.getLiczbaOdcinkow()) {
                     iterator.remove();
-                    pojazd.setPrzebytaDroga(trasa.getLiczbaOdcinkow() * trasa.getDlugoscOdcinka());
+                    pojazd.setPrzebytaDroga(calkowitaDlugoscTrasy);
                     trasa.getPojazdyNaParkingu().add(pojazd);
+                    double czasJazdy = simTime() - pojazd.getCzasStartu();
                     System.out.println("[" + simTime() + "] Pojazd zaparkował. ID: " +
-                        pojazd.getId() + ", Całkowity czas jazdy: " +
-                        (simTime() - pojazd.getCzasStartu()));
+                        pojazd.getId() + ", Czas jazdy w jedną stronę: " +
+                        String.format("%.2f", czasJazdy));
                 }
-                // Sprawdzenie czy pojazd zakończył całą trasę (powrót)
+                // Dotarcie do początku (koniec całej podróży)
                 else if (pojazd.isKierunekPowrotny() && nowyOdcinek <= 0) {
                     iterator.remove();
                     double calkowityCzasPrzejazdu = simTime() - pojazd.getCzasStartu();
                     trasa.getCzasPrzejazdu().setValue(calkowityCzasPrzejazdu);
-                    System.out.println("[" + simTime() + "] Pojazd zakończył trasę. ID: " +
-                        pojazd.getId() + ", Całkowity czas przejazdu: " + calkowityCzasPrzejazdu);
+                    System.out.println("[" + simTime() + "] Pojazd zakończył całą trasę. ID: " +
+                        pojazd.getId() + ", Całkowity czas przejazdu: " +
+                        String.format("%.2f", calkowityCzasPrzejazdu));
                 }
             }
         }

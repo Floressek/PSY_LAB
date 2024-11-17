@@ -47,10 +47,16 @@ class Pojazd extends BasicSimObj {
         this.czasParkowania = czasParkowania;
     }
 
-    // Metoda zwracająca całkowity czas przejazdu wliczając parkowanie
-    public double getCzasPrzejazdu() {
-        return simTime() - czasStartu + czasParkowania;
-    }
+//    // Metoda zwracająca całkowity czas przejazdu wliczając parkowanie
+//    public double getCzasPrzejazdu() {
+//        return simTime() - czasStartu + czasParkowania;
+//    }
+//
+//    public void rozpocznijPowrot(double nowaPredkosc) {
+//        this.predkosc = nowaPredkosc;
+//        this.kierunekPowrotny = true;
+//        // Nie resetujemy przebytej drogi - będziemy liczyć dalej
+//    }
 
     @Override
     public void reflect(IPublisher iPublisher, INotificationEvent iNotificationEvent) {}
