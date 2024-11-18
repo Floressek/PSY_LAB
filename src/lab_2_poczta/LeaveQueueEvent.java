@@ -8,17 +8,18 @@ public class LeaveQueueEvent extends BasicSimEvent<Poczta, Object> {
     public LeaveQueueEvent(Poczta entity, Object o, double delay) throws SimControlException {
         super(entity, o, delay);
     }
+
     @Override
     protected void stateChange() throws SimControlException {
         Poczta poczta = super.getSimObj();
 
-        for(int i = 0; i < poczta.getQueue().size(); i++) {
+        for (int i = 0; i < poczta.getQueue().size(); i++) {
             Interesant interesant = poczta.getQueue().get(i);
 
-            if(interesant.getMaxWT() <= simTime()) { // maxWT - maksymalny czas oczekiwania, chca odejsc po tym czasie z kolejki
+            if (interesant.getMaxWT() <= simTime()) { // maxWT - maksymalny czas oczekiwania, chca odejsc po tym czasie z kolejki
                 poczta.getQueue().remove(interesant);
                 System.out.println("[" + simTime() + "] Interesant zniecierpliwil sie i opuszcza kolejke. " +
-                        "ID Interesanta: " + interesant.getId() + " Liczba niecierpliwych klientow: " + poczta.getNiecierpliwi()
+                        "ID Interesanta: " + interesant.getID() + " Liczba niecierpliwych klientow: " + poczta.getNiecierpliwi()
                         + " Liczba oblsuzonych: " + poczta.getObsluzeni() + " Dlugosc kolejki: " + poczta.getQueue().size());
                 poczta.incrementNiecierpliwi();
                 poczta.getQueueTime().setValue(simTime() - interesant.getEnterTime());

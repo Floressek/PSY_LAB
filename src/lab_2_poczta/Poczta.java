@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Poczta extends BasicSimObj {
+
+    // Wartosci uzywane w symulacji - poczta jako posrednik
     private RNGenerator rnd;
     private double miST;
     private double sigmaST;
